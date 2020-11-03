@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     stationHashMap.put("area",stationJSON.getString("site_area"));//2.到stationJSON抓site_area，放進"area"框格裡
                     list.add(stationHashMap);
 
-
                     Log.d("station",stationJSON.getString("site_area"));
                 }
                 SimpleAdapter adapter=new SimpleAdapter(
