@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                         HashMap<String,Object>item=list.get(i);
                         Toast.makeText(MainActivity.this,(String)item.get("name"),Toast.LENGTH_SHORT).show();
 
-
                     }
                 });
 
