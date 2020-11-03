@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     JSONObject stationJSON=jsonArray.getJSONObject(i);
                     HashMap<String,Object>stationHashMap=new HashMap<>();
-                    stationHashMap.put("name",stationJSON.getString("site_name")); //到stationJSON抓site_name,丟進"name"的名義
-                    stationHashMap.put("area",stationJSON.getString("site_area"));//到stationJSON抓site_area，放進"area"框格裡
+                    stationHashMap.put("name",stationJSON.getString("site_name")); //1.到stationJSON抓site_name,丟進"name"的名義
+                    stationHashMap.put("area",stationJSON.getString("site_area"));//2.到stationJSON抓site_area，放進"area"框格裡
                     list.add(stationHashMap);
 
 
@@ -105,14 +105,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 SimpleAdapter adapter=new SimpleAdapter(
                         MainActivity.this,
-                        list,
-                        R.layout.stationitem,
-                        new String[]{"name","area"},
+                        list,//資料
+                        R.layout.stationitem,//放資料的地方
+                        new String[]{"name","area"},//1,2的"name","area"丟下來，看你要呈現什麼就寫上來，但要先在上面連結就是了
+                        //             ▼        ▼
                         new int[]{R.id.tv_name,R.id.tv_area}
                 );
 
                 lv_station.setAdapter(adapter);
-                
+
             }catch(JSONException e){
                 e.printStackTrace();
             }
