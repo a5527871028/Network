@@ -6,8 +6,11 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -112,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
                 );
 
                 lv_station.setAdapter(adapter);
+
+                lv_station.setOnItemClickListener(new AdapterView.OnItemClickListener() { //按下去
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //i=按到的HashMap
+                        HashMap<String,Object>item=list.get(i);
+                        Toast.makeText(MainActivity.this,(String)item.get("name"),Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
 
             }catch(JSONException e){
                 e.printStackTrace();
