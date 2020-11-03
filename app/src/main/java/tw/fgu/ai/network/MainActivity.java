@@ -110,7 +110,9 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{"name","area"},
                         new int[]{R.id.tv_name,R.id.tv_area}
                 );
+
                 lv_station.setAdapter(adapter);
+                
             }catch(JSONException e){
                 e.printStackTrace();
             }
