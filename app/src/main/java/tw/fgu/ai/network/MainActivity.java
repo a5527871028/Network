@@ -3,6 +3,7 @@ package tw.fgu.ai.network;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +30,6 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-
     ArrayList<HashMap<String,Object>>list; //串列上(HashMap)的欄位(site_name,site_area)宣告
     ListView lv_station;
 
@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkTask networkTask=new NetworkTask();
         networkTask.execute("http://www.yichengtech.tw/twblogs/tw_sites.php");
-
     }
-
 
     public class NetworkTask extends AsyncTask<String,Void,String> {
 
@@ -57,15 +55,14 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
             dialog=new ProgressDialog(MainActivity.this);
             dialog.setCancelable(false);
-            dialog=ProgressDialog.show(MainActivity.this, "連線中", "請稍候");
+            dialog=ProgressDialog.show(MainActivity.this, "連線中", "請稍後");
         }
 
         @Override
-        protected String doInBackground(String... params) { //「背景中」
+        protected String doInBackground(String... params) {	//「背景中」
             // TODO Auto-generated method stub
             HttpClient client=new DefaultHttpClient(); //把自己變成瀏覽器
             HttpGet get=new HttpGet(params[0]);
-
             try {
                 HttpResponse response=client.execute(get);
                 HttpEntity entity=response.getEntity();
@@ -91,44 +88,52 @@ public class MainActivity extends AppCompatActivity {
             Log.d("result",resultString);
             parseJSONArray();
         }
-        void  parseJSONArray(){
 
-            try{
+        void parseJSONArray()
+        {
+            try {
                 JSONArray jsonArray=new JSONArray(resultString);
                 for(int i=0;i<jsonArray.length();i++)
                 {
                     JSONObject stationJSON=jsonArray.getJSONObject(i);
-                    HashMap<String,Object>stationHashMap=new HashMap<>();
-                    stationHashMap.put("name",stationJSON.getString("site_name")); //1.到stationJSON抓site_name,丟進"name"的名義
+                    HashMap<String,Object> stationHashMap=new HashMap<>();
+                    stationHashMap.put("name",stationJSON.getString("site_name"));//1.到stationJSON抓site_name,丟進"name"的名義
                     stationHashMap.put("area",stationJSON.getString("site_area"));//2.到stationJSON抓site_area，放進"area"框格裡
+                    stationHashMap.put("id",stationJSON.getString("site_id"));
                     list.add(stationHashMap);
-
-                    Log.d("station",stationJSON.getString("site_area"));
+                    Log.d("station", stationJSON.getString("site_name"));
                 }
+
                 SimpleAdapter adapter=new SimpleAdapter(
                         MainActivity.this,
-                        list,//資料
-                        R.layout.stationitem,//放資料的地方
-                        new String[]{"name","area"},//1,2的"name","area"丟下來，看你要呈現什麼就寫上來，但要先在上面連結就是了
-                        //             ▼        ▼
+                        list, //資料
+                        R.layout.station_item, //放資料的地方
+                        new String[]{"name","area"}, ////1,2的"name","area"丟下來，看你要呈現什麼就寫上來，但要先在上面連結就是了
+//             ▼        ▼
                         new int[]{R.id.tv_name,R.id.tv_area}
                 );
-
                 lv_station.setAdapter(adapter);
 
-                lv_station.setOnItemClickListener(new AdapterView.OnItemClickListener() { //按下去
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { //i=按到的HashMap
-                        HashMap<String,Object>item=list.get(i);
-                        Toast.makeText(MainActivity.this,(String)item.get("name"),Toast.LENGTH_SHORT).show();
 
+
+
+                lv_station.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        HashMap<String,Object> item=list.get(i);
+                        Toast.makeText(MainActivity.this,(String)item.get("name"),Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(MainActivity.this,SiteActivity.class);
+                        Bundle bundle=new Bundle();
+                        //bundle.putString("name",(String)item.get("name"));
+                        bundle.putString("id",(String)item.get("id"));
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                     }
                 });
 
-            }catch(JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-
     }
 }
